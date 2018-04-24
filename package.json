@@ -1,0 +1,31 @@
+{
+    "name": "visual-changelog",
+    "version": "1.0.0",
+    "description":
+        "Visualize a changelog from an open-source project in your browser",
+    "main": "index.js",
+    "scripts": {
+        "build-changelog-parser":
+            "./node_modules/.bin/browserify node_modules/@release-notes/changelog-parser/lib/changelog-parser.js -o src/changelog-parser.js -s changelog",
+        "build-parse-changelog":
+            "./node_modules/.bin/browserify node_modules/parse-changelog/index.js -o src/parse-changelog.js -s parsechangelog"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vogloblinsky/visual-changelog.git"
+    },
+    "keywords": ["Changelog"],
+    "author": "Vincent Ogloblinsky",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/vogloblinsky/visual-changelog/issues"
+    },
+    "homepage": "https://github.com/vogloblinsky/visual-changelog#readme",
+    "dependencies": {
+        "@release-notes/changelog-parser": "^0.1.2",
+        "parse-changelog": "^1.0.2"
+    },
+    "devDependencies": {
+        "browserify": "^16.2.0"
+    }
+}

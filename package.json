@@ -1,20 +1,20 @@
 {
     "name": "visual-changelog",
     "version": "1.0.0",
-    "description":
-        "Visualize a changelog from an open-source project in your browser",
+    "description": "Visualize a changelog from an open-source project in your browser",
     "main": "index.js",
     "scripts": {
-        "build-changelog-parser":
-            "./node_modules/.bin/browserify node_modules/@release-notes/changelog-parser/lib/changelog-parser.js -o src/changelog-parser.js -s changelog",
-        "build-parse-changelog":
-            "./node_modules/.bin/browserify node_modules/parse-changelog/index.js -o src/parse-changelog.js -s parsechangelog"
+        "build-unified": "./node_modules/.bin/browserify node_modules/unified/index.js -s unified | uglifyjs -c > src/js/lib/unified.min.js",
+        "build-remark-parse": "./node_modules/.bin/browserify node_modules/remark-parse/index.js -s markdown | uglifyjs -c > src/js/lib/remark-parse.min.js",
+        "build-libs": "npm run build-unified && npm run build-remark-parse"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vogloblinsky/visual-changelog.git"
     },
-    "keywords": ["Changelog"],
+    "keywords": [
+        "Changelog"
+    ],
     "author": "Vincent Ogloblinsky",
     "license": "MIT",
     "bugs": {
@@ -22,10 +22,11 @@
     },
     "homepage": "https://github.com/vogloblinsky/visual-changelog#readme",
     "dependencies": {
-        "@release-notes/changelog-parser": "^0.1.2",
-        "parse-changelog": "^1.0.2"
+        "remark-parse": "^5.0.0",
+        "unified": "^6.1.6"
     },
     "devDependencies": {
-        "browserify": "^16.2.0"
+        "browserify": "^16.2.0",
+        "uglifyify": "^5.0.0"
     }
 }

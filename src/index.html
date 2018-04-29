@@ -7,49 +7,40 @@
     <title>Visual changelog</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style>
-        body {
-            font-family: 'Helvetica'
-        }
-    </style>
+    <link href="./css/lib/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" rel="preload" as="style">
+    <link href="./css/lib/spinkit.min.css" rel="stylesheet" type="text/css">
+    <link href="./css/app.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
     <!--[if lte IE 9]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-        <![endif]-->
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
 
-    <h1>Visual changelog</h1>
+    <h1 class="title">Visual changelog</h1>
 
-    <div id="container">
+    <p class="synopsis">Visualize the CHANGELOG file of any Github repository.</p>
+
+    <!--<p class="synopsis-details">The list comes from a query of Github repositories available in a public BIGQUERY dataset.</p>
+
+    <div class="repositories-form">
+        <select id="repository-dropdown" name="repository"></select>
+    </div>-->
+
+    <div id="visualization">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
     </div>
 
-    <script src="changelog-parser.js"></script>
-    <script src="parse-changelog.js"></script>
-    <script>
-        // Angular : https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md
-        // ts-stats : https://raw.githubusercontent.com/compodoc/ts-stats/master/CHANGELOG.md
-        // parse-changelog test : https://raw.githubusercontent.com/SamyPesse/parse-changelog/master/test/CHANGES.md
-        // compodoc : https://raw.githubusercontent.com/compodoc/compodoc/develop/CHANGELOG.md
-        // vue.js : no CHANGELOG.md
-        // react : https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
-        // fs-extra : https://raw.githubusercontent.com/jprichardson/node-fs-extra/master/CHANGELOG.md
-        // commander.js : https://raw.githubusercontent.com/tj/commander.js/master/CHANGELOG.md
-        // request : https://github.com/request/request/blob/master/CHANGELOG.md
+    <script src="js/lib/unified.min.js"></script>
+    <script src="js/lib/moment.min.js"></script>
+    <script src="js/lib/vis-timeline-graph2d.min.js"></script>
+    <script src="js/lib/remark-parse.min.js"></script>
+    <script src="js/app.js"></script>
 
-        // keep a changelog : https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/master/CHANGELOG.md
-
-        // parse-changelog works fine with versions after # without []
-
-        fetch(`https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/master/CHANGELOG.md`).then(response =>
-                response.text())
-            .then(data => {
-                //let parsedChangelog = changelog.parse(data);
-                //console.log(parsedChangelog);
-                let parsedChangelog = parsechangelog(data);
-                console.log(parsedChangelog);
-            });
-    </script>
 </body>
 
 </html>

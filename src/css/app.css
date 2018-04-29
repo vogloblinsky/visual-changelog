@@ -1,11 +1,71 @@
 body {
     font-family: 'Helvetica';
     background: #f1f1f1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.title,
-.synopsis {
+header {
+    background: #4a69bd;
+    width: 100%;
     text-align: center;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.synopsis-container {
+    background: #6a89cc;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.repositories-form {
+    background: #82ccdd;
+    width: 100%;
+    text-align: center;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.repositories-form select {
+    padding: 5px;
+}
+
+.order-buttons {
+    height: 25px;
+    margin-left: 5px;
+}
+.order-buttons.selected {
+    font-weight: bold;
+    border: 1px solid black;
+}
+
+#visualization {
+    display: none;
+    width: 100%;
+}
+
+footer {
+    position: fixed;
+    background: #4a69bd;
+    bottom: 0;
+    width: 100%;
+    font-size: 0.8em;
+    padding: 10px;
+    color: white;
+}
+footer a {
+    color: #38ada9;
 }
 
 /* alternating column backgrounds */

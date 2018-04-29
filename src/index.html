@@ -17,15 +17,18 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
 
-    <h1 class="title">Visual changelog</h1>
+    <header>Visual changelog</header>
 
-    <p class="synopsis">Visualize the CHANGELOG file of any Github repository.</p>
-
-    <!--<p class="synopsis-details">The list comes from a query of Github repositories available in a public BIGQUERY dataset.</p>
+    <div class="synopsis-container">
+        <p class="synopsis">Visualize the CHANGELOG file of 142446 Github repositories extracted from a public BIGQUERY dataset.
+            (142446 in 2018-04-29)</p>
+    </div>
 
     <div class="repositories-form">
         <select id="repository-dropdown" name="repository"></select>
-    </div>-->
+        <button id="alphabeticallyOrderButton" title="Order alphabetically" class="order-buttons" data-order="asc">Abc</button>
+        <button id="starsOrderButton" title="Order by stars" class="order-buttons selected" data-order="star">&#9733;</button>
+    </div>
 
     <div id="visualization">
         <div class="spinner">
@@ -34,6 +37,10 @@
             <div class="bounce3"></div>
         </div>
     </div>
+
+    <footer> Built with ❤ by
+        <a href="https://twitter.com/vogloblinsky" target="_blank">Vincent Ogloblinsky — @vogloblinsky</a>
+    </footer>
 
     <script src="js/lib/unified.min.js"></script>
     <script src="js/lib/moment.min.js"></script>

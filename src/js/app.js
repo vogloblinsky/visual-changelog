@@ -17,15 +17,75 @@ const DATE_REGEX = () => /(\d{4})-(\d{2})-(\d{2})/gi;
 
 let headingsWithSemVer = [];
 let REPOSITORIES = [];
+let ORDERED_REPOSITORIES = [];
 
-/*fetch(`./data/final-data.json`)
+let repositoryDropdown = document.getElementById('repository-dropdown');
+
+fetch(`./data/final-data.json`)
     .then(response => response.json())
     .then(data => {
         REPOSITORIES = data;
-        console.log(REPOSITORIES);
-    });*/
+        ORDERED_REPOSITORIES = orderRepositoriesByStars();
+        populateSelect();
+    });
 
-fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
+let orderRepositoriesAlphabetically = () => {
+    return REPOSITORIES.sort(
+        (a, b) =>
+            a.repo_name.split('/')[1] !== b.repo_name.split('/')[1]
+                ? a.repo_name.split('/')[1] < b.repo_name.split('/')[1]
+                    ? -1
+                    : 1
+                : 0
+    );
+};
+let orderRepositoriesByStars = () => {
+    return REPOSITORIES.sort(
+        (a, b) => (a.stars !== b.stars ? (a.stars < b.stars ? 1 : -1) : 0)
+    );
+};
+
+let populateSelect = () => {
+    repositoryDropdown.length = 0;
+    let defaultOption = document.createElement('option');
+    defaultOption.text = 'Choose a repository';
+    repositoryDropdown.add(defaultOption);
+    repositoryDropdown.selectedIndex = 0;
+
+    let option;
+    for (let i = 0; i < ORDERED_REPOSITORIES.length; i++) {
+        option = document.createElement('option');
+        option.text = `${ORDERED_REPOSITORIES[i].repo_name.split('/')[0]} - ${
+            ORDERED_REPOSITORIES[i].repo_name.split('/')[1]
+        } | ${ORDERED_REPOSITORIES[i].stars} stars`;
+        option.value = ORDERED_REPOSITORIES[i].repo_name;
+        repositoryDropdown.add(option);
+    }
+};
+
+let fetchChangelog = repository => {
+    function handleErrors(response) {
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return response;
+    }
+    fetch(`https://raw.githubusercontent.com/${repository}/master/CHANGELOG.md`)
+        .then(handleErrors)
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => console.log(error));
+};
+
+document.querySelector('select').addEventListener('change', (event) => {
+    let repositoryName = event.currentTarget.value;
+    console.log(repositoryName);
+    fetchChangelog(repositoryName)
+})
+
+/*fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
     .then(response => response.text())
     .then(data => {
         let _unified = unified().use(markdown);
@@ -69,7 +129,7 @@ fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
         });
 
         createGraph();
-    });
+    });*/
 
 let createGraph = () => {
     var now = moment()
@@ -114,3 +174,27 @@ let removeSpinner = () => {
     let spinner = document.querySelector('.spinner');
     spinner.parentNode.removeChild(spinner);
 };
+
+/**
+ * Order buttons
+ */
+
+let cleanOrderButtonsState = () => {
+    [...document.querySelectorAll('.order-buttons')].map(button => {
+        button.classList.remove('selected');
+    });
+};
+
+[...document.querySelectorAll('.order-buttons')].map(button => {
+    button.addEventListener('click', event => {
+        cleanOrderButtonsState();
+        event.currentTarget.classList.add('selected');
+        let dataOrder = event.currentTarget.getAttribute('data-order');
+        if (dataOrder === 'asc') {
+            ORDERED_REPOSITORIES = orderRepositoriesAlphabetically();
+        } else {
+            ORDERED_REPOSITORIES = orderRepositoriesByStars();
+        }
+        populateSelect();
+    });
+});

@@ -4,6 +4,9 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
 header {
@@ -15,6 +18,10 @@ header {
     padding-bottom: 10px;
     font-size: 1.5em;
     font-weight: bold;
+}
+
+.spinner > div {
+    background: #38ada9;
 }
 
 .synopsis-container {
@@ -44,10 +51,12 @@ header {
     width: 50px;
     height: 40px;
     margin-left: 5px;
+    background: #f9f9f9;
+    border-style: solid;
 }
 .order-buttons.selected {
     font-weight: bold;
-    border: 1px solid black;
+    border: 1px solid #999999;
 }
 
 .choices {
@@ -59,8 +68,12 @@ header {
 .choices__list--dropdown .choices__item--selectable {
     padding-right: 0;
 }
+.choices .choices__list .choices__list .choices__item--disabled { text-indent: -9999px; height: 0; width: 0; padding: 0; }
 .choices__inner {
     min-height: 20px;
+}
+.choices__list--dropdown {
+    z-index: 2;
 }
 .list-stars {
     float: right;
@@ -81,6 +94,7 @@ header {
 #visualization {
     display: none;
     width: 100%;
+    margin: auto;
 }
 
 footer {
@@ -105,4 +119,11 @@ footer a {
 .vis-panel .vis-label,
 .vis-time-axis .vis-major {
     font-weight: bold;
+}
+
+/* Notifier */
+
+.notifier-container {
+    top: initial;
+    bottom: 5px;
 }

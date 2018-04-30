@@ -22,6 +22,7 @@ let REPOSITORIES = [];
 let ORDERED_REPOSITORIES = [];
 let choicesItems = [];
 let choiceSelectReference;
+let timelineReference;
 
 let repositoryDropdown = document.getElementById('repository-dropdown');
 
@@ -30,8 +31,7 @@ fetch(`./data/final-data.json`)
     .then(data => {
         REPOSITORIES = data;
         ORDERED_REPOSITORIES = orderRepositoriesByStars();
-        //populateSelect();
-
+        
         console.log(ORDERED_REPOSITORIES);
 
         prepareDataForChoiceSelect();
@@ -54,7 +54,13 @@ let prepareDataForChoiceSelect = () => {
             }
         }
     });
-    console.log(choiceSelectReference);
+    choicesItems.unshift({
+        value: '',
+        label: 'Select or find a repository',
+        placeholder: true,
+        disabled: true,
+        selected: false
+    });
     
     if (choiceSelectReference) {
         choiceSelectReference.destroy();
@@ -65,7 +71,11 @@ let createChoiceSelect = (filter) => {
     let sortFilterMethod;
     if (filter === 'stars') {
         sortFilterMethod = function(a, b) {
-            return (a.customProperties.stars !== b.customProperties.stars ? (a.customProperties.stars < b.customProperties.stars ? 1 : -1) : 0);
+            if (typeof a.customProperties !== 'undefined' && typeof b.customProperties !== 'undefined') {
+                return (a.customProperties.stars !== b.customProperties.stars ? (a.customProperties.stars < b.customProperties.stars ? 1 : -1) : 0);
+            } else {
+                return 0;
+            }
         }
     } else {
         sortFilterMethod = function(a, b) {
@@ -75,45 +85,91 @@ let createChoiceSelect = (filter) => {
     choiceSelectReference = new Choices(repositoryDropdown, {
         itemSelectText: '',
         choices: choicesItems,
+        placeholderValue: 'Please Choose…',
         sortFilter: sortFilterMethod,
+        shouldSort: false,
         callbackOnCreateTemplates: function(template) {
             var classNames = this.config.classNames;
             return {
                 item: data => {
-                    return template(`
-                <div class="${classNames.item} ${
-                        data.highlighted
-                            ? classNames.highlightedState
-                            : classNames.itemSelectable
-                    }" data-item data-id="${data.id}" data-value="${
-                        data.value
-                    }" ${data.active ? 'aria-selected="true"' : ''} ${
-                        data.disabled ? 'aria-disabled="true"' : ''
-                    }>
-                    ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars list-stars-selected">${data.customProperties.stars} &#9733;</span>
-                </div>
-              `);
+                    if (data.customProperties) {
+                            return template(`
+                            <div class="${classNames.item} ${
+                                    data.highlighted
+                                        ? classNames.highlightedState
+                                        : classNames.itemSelectable
+                                }" data-item data-id="${data.id}" data-value="${
+                                    data.value
+                                }" ${data.active ? 'aria-selected="true"' : ''} ${
+                                    data.disabled ? 'aria-disabled="true"' : ''
+                                }>
+                                ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars list-stars-selected">${data.customProperties.stars} &#9733;</span>
+                            </div>
+                        `);
+                    } else {
+                        return template(`
+                        <div class="${classNames.item} ${classNames.itemChoice} ${
+                                data.disabled
+                                    ? classNames.itemDisabled
+                                    : classNames.itemSelectable
+                            }" data-select-text="${
+                                this.config.itemSelectText
+                            }" data-choice ${
+                                data.disabled
+                                    ? 'data-choice-disabled aria-disabled="true"'
+                                    : 'data-choice-selectable'
+                            } data-id="${data.id}" data-value="${data.value}" ${
+                                data.groupId > 0
+                                    ? 'role="treeitem"'
+                                    : 'role="option"'
+                            }>
+                            <span>${data.label}</span>
+                        </div>
+                    `);
+                    }
                 },
                 choice: data => {
-                    return template(`
-                <div class="${classNames.item} ${classNames.itemChoice} ${
-                        data.disabled
-                            ? classNames.itemDisabled
-                            : classNames.itemSelectable
-                    }" data-select-text="${
-                        this.config.itemSelectText
-                    }" data-choice ${
-                        data.disabled
-                            ? 'data-choice-disabled aria-disabled="true"'
-                            : 'data-choice-selectable'
-                    } data-id="${data.id}" data-value="${data.value}" ${
-                        data.groupId > 0
-                            ? 'role="treeitem"'
-                            : 'role="option"'
-                    }>
-                    ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars">${data.customProperties.stars} &#9733;</span>
-                </div>
-              `);
+                    if (data.customProperties) {
+                        return template(`
+                            <div class="${classNames.item} ${classNames.itemChoice} ${
+                                    data.disabled
+                                        ? classNames.itemDisabled
+                                        : classNames.itemSelectable
+                                }" data-select-text="${
+                                    this.config.itemSelectText
+                                }" data-choice ${
+                                    data.disabled
+                                        ? 'data-choice-disabled aria-disabled="true"'
+                                        : 'data-choice-selectable'
+                                } data-id="${data.id}" data-value="${data.value}" ${
+                                    data.groupId > 0
+                                        ? 'role="treeitem"'
+                                        : 'role="option"'
+                                }>
+                                ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars">${data.customProperties.stars} &#9733;</span>
+                            </div>
+                        `);
+                    } else {
+                        return template(`
+                            <div class="${classNames.item} ${classNames.itemChoice} ${
+                                    data.disabled
+                                        ? classNames.itemDisabled
+                                        : classNames.itemSelectable
+                                }" data-select-text="${
+                                    this.config.itemSelectText
+                                }" data-choice ${
+                                    data.disabled
+                                        ? 'data-choice-disabled aria-disabled="true"'
+                                        : 'data-choice-selectable'
+                                } data-id="${data.id}" data-value="${data.value}" ${
+                                    data.groupId > 0
+                                        ? 'role="treeitem"'
+                                        : 'role="option"'
+                                }>
+                                <span class="repo-name">${data.label}</span>
+                            </div>
+                        `);
+                    }
                 }
             };
         }
@@ -136,27 +192,6 @@ let orderRepositoriesByStars = () => {
     );
 };
 
-let populateSelect = () => {
-    repositoryDropdown.length = 0;
-    let defaultOption = document.createElement('option');
-    defaultOption.text = 'Choose a repository';
-    repositoryDropdown.add(defaultOption);
-    repositoryDropdown.selectedIndex = 0;
-
-    let option;
-    for (let i = 0; i < ORDERED_REPOSITORIES.length; i++) {
-        let repoOwner = ORDERED_REPOSITORIES[i].repo_name.split('/')[0];
-        let repoName = ORDERED_REPOSITORIES[i].repo_name.split('/')[1];
-        option = document.createElement('option');
-        option.text = `${repoOwner} - ${repoName}`;
-        option.value = ORDERED_REPOSITORIES[i].repo_name;
-        option.setAttribute('data-stars', ORDERED_REPOSITORIES[i].stars);
-        option.setAttribute('data-owner', repoOwner);
-        option.setAttribute('data-name', repoName);
-        repositoryDropdown.add(option);
-    }
-};
-
 let fetchChangelog = repository => {
     function handleErrors(response) {
         if (!response.ok) {
@@ -176,6 +211,7 @@ let fetchChangelog = repository => {
         .then(response => response.text())
         .then(data => {
             console.log(data);
+            processChangelog(data);
         })
         .catch(error => console.log(error));
 };
@@ -183,69 +219,117 @@ let fetchChangelog = repository => {
 document.querySelector('select').addEventListener('change', event => {
     let repositoryName = event.currentTarget.value;
     console.log(repositoryName);
+    if (timelineReference) {
+        timelineReference.destroy();
+    }
+    displayVizualisation();
+    showSpinner();
     fetchChangelog(repositoryName);
 });
 
-/*fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
-    .then(response => response.text())
-    .then(data => {
-        let _unified = unified().use(markdown);
-        let markdownAST = _unified.parse(data);
+let displayVizualisation = () => {
+    document.getElementById('visualization').style.display = 'block';
+}
 
-        markdownAST.children.filter(node => {
-            if (node.type === 'heading') {
-                let i = 0,
-                    nodeChildren = node.children,
-                    len = nodeChildren.length,
-                    hasSemVer = false,
-                    version = '',
-                    time = '';
-                // Find nodes of type link with text matching semver regex
+let processChangelog = (data) => {
+    let _unified = unified().use(markdown);
+    let markdownAST = _unified.parse(data);
+
+    headingsWithSemVer = [];
+
+    markdownAST.children.filter(node => {
+        if (node.type === 'heading') {
+            let i = 0,
+                nodeChildren = node.children,
+                len = nodeChildren.length,
+                hasSemVer = false,
+                hasTime = false,
+                version = '',
+                time = '';
+            // Find nodes of type link with text matching semver regex
+            for (i; i < len; i++) {
+                if (nodeChildren[i].type === 'link') {
+                    let link = nodeChildren[i].children[0];
+                    if (SEMVER_REGEX().test(link.value)) {
+                        hasSemVer = true;
+                        version = link.value;
+                    }
+                }
+            }
+            // if no luck with link, try find direct text node
+            if (!hasSemVer) {
+                i = 0;
                 for (i; i < len; i++) {
-                    if (nodeChildren[i].type === 'link') {
-                        let link = nodeChildren[i].children[0];
-                        if (SEMVER_REGEX().test(link.value)) {
+                    if (nodeChildren[i].type === 'text') {
+                        let text = nodeChildren[i].value;
+                        if (SEMVER_REGEX().test(text)) {
                             hasSemVer = true;
-                            version = link.value;
+                            version = text.match(SEMVER_REGEX())[0];
                         }
                     }
                 }
-                if (hasSemVer) {
-                    i = 0;
-                    // Find nodes of type text with text matching date regex
-                    for (i; i < len; i++) {
-                        if (nodeChildren[i].type === 'text') {
-                            let text = nodeChildren[i].value;
-                            if (DATE_REGEX().test(text)) {
-                                time = text.match(DATE_REGEX())[0];
-                            }
+            }
+            if (hasSemVer) {
+                i = 0;
+                // Find nodes of type text with text matching date regex
+                for (i; i < len; i++) {
+                    if (nodeChildren[i].type === 'text') {
+                        let text = nodeChildren[i].value;
+                        if (DATE_REGEX().test(text)) {
+                            time = text.match(DATE_REGEX())[0];
+                            hasTime = true;
                         }
                     }
+                }
+                if (hasTime) {
                     headingsWithSemVer.push({
                         time: time,
                         version: version
                     });
                 }
             }
-        });
+        }
+    });
 
-        createGraph();
+    if (headingsWithSemVer.length === 0) {
+        notifier.show(
+            'Sorry !',
+            'We could not process correctly the CHANGELOG file.',
+            'warning',
+            '',
+            3000
+        );
+        hideSpinner();
+    }
+
+    createGraph();
+}
+
+/*fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
+    .then(response => response.text())
+    .then(data => {
+        
     });*/
 
 let createGraph = () => {
-    var now = moment()
+    let now = moment()
         .minutes(0)
         .seconds(0)
         .milliseconds(0);
 
-    var groups = new vis.DataSet();
+    let groups = new vis.DataSet();
     groups.add({
         id: '0',
-        content: 'Angular'
+        content: ''
     });
 
-    var items = new vis.DataSet();
-    for (var i = 0; i < headingsWithSemVer.length; i++) {
+    let items = new vis.DataSet();
+    let minDate = moment();
+    for (let i = 0; i < headingsWithSemVer.length; i++) {
+        let momentTime = moment(headingsWithSemVer[i].time);
+        if (moment(momentTime).isBefore(minDate)) {
+            minDate = momentTime
+        }
         items.add({
             id: i,
             group: 0,
@@ -255,26 +339,30 @@ let createGraph = () => {
         });
     }
 
-    var container = document.getElementById('visualization');
-    var options = {
+    let container = document.getElementById('visualization');
+    let options = {
         groupOrder: 'content',
-        min: moment('2016-09-14').subtract(2, 'M'),
+        min: minDate.subtract(2, 'M'),
         max: moment().add(1, 'M'),
         orientation: {
             axis: 'top',
             item: 'top'
         },
-        onInitialDrawComplete: removeSpinner
+        onInitialDrawComplete: hideSpinner
     };
 
-    var timeline = new vis.Timeline(container, items, options);
-    timeline.setGroups(groups);
+    timelineReference = new vis.Timeline(container, items, options);
+    timelineReference.setGroups(groups);
 };
 
-let removeSpinner = () => {
-    let spinner = document.querySelector('.spinner');
-    spinner.parentNode.removeChild(spinner);
+let spinner = document.querySelector('.spinner');
+let hideSpinner = () => {
+    //spinner.parentNode.removeChild(spinner);
+    spinner.style.display = 'none';
 };
+let showSpinner = () => {
+    spinner.style.display = 'block';
+}
 
 /**
  * Order buttons

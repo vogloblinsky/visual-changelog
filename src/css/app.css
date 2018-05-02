@@ -20,6 +20,9 @@ header {
     font-weight: bold;
 }
 
+.spinner {
+    display: none;
+}
 .spinner > div {
     background: #38ada9;
 }
@@ -34,6 +37,7 @@ header {
 .repositories-form {
     background: #82ccdd;
     width: 100%;
+    flex-shrink: 0;
     color: white;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -92,16 +96,12 @@ header {
 }
 
 #visualization {
-    display: none;
-    width: 100%;
-    margin: auto;
+    flex-grow: 2;
+    overflow-y: auto;
 }
 
 footer {
-    position: fixed;
     background: #4a69bd;
-    bottom: 0;
-    width: 100%;
     font-size: 0.8em;
     padding: 10px;
     color: white;

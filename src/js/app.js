@@ -17,6 +17,12 @@ const DATE_REGEX = () => /(\d{4})-(\d{2})-(\d{2})/gi;
 
 const GITHUB_BOOK_SVG = '<svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>'
 
+const ERROR_PARSING_MESSAGE = 
+`We could not process correctly the CHANGELOG file.
+We easily parse CHANGELOG that respect https://keepachangelog.com convention.
+`;
+const ERROR_FETCH_MESSAGE = 'Could not fetch the CHANGELOG file.';
+
 let headingsWithSemVer = [];
 let REPOSITORIES = [];
 let ORDERED_REPOSITORIES = [];
@@ -26,10 +32,12 @@ let timelineReference;
 
 let repositoryDropdown = document.getElementById('repository-dropdown');
 
-fetch(`./data/final-data.json`)
+let uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
+
+fetch(`./data/changelogswithstars.json`)
     .then(response => response.json())
     .then(data => {
-        REPOSITORIES = data;
+        REPOSITORIES = uniqueArray(data);
         ORDERED_REPOSITORIES = orderRepositoriesByStars();
         
         console.log(ORDERED_REPOSITORIES);
@@ -40,15 +48,15 @@ fetch(`./data/final-data.json`)
 
 let prepareDataForChoiceSelect = () => {
     choicesItems = ORDERED_REPOSITORIES.map((repo) => {
-        let repoOwner = repo.repo_name.split('/')[0];
-        let repoName = repo.repo_name.split('/')[1];
+        let repoOwner = repo.name.split('/')[0];
+        let repoName = repo.name.split('/')[1];
         return {
-            value: repo.repo_name,
+            value: repo.name,
             label: repoOwner + ' / ' + repoName,
             selected: false,
             disabled: false,
             customProperties: {
-                stars: repo.stars,
+                stars: parseInt(repo.stars),
                 name: repoName,
                 owner: repoOwner
             }
@@ -179,8 +187,8 @@ let createChoiceSelect = (filter) => {
 let orderRepositoriesAlphabetically = () => {
     return REPOSITORIES.sort(
         (a, b) =>
-            a.repo_name.split('/')[1] !== b.repo_name.split('/')[1]
-                ? a.repo_name.split('/')[1] < b.repo_name.split('/')[1]
+            a.name.split('/')[1] !== b.name.split('/')[1]
+                ? a.name.split('/')[1] < b.name.split('/')[1]
                     ? -1
                     : 1
                 : 0
@@ -197,7 +205,7 @@ let fetchChangelog = repository => {
         if (!response.ok) {
             notifier.show(
                 'Oups !',
-                'Could not fetch the CHANGELOG file.',
+                ERROR_FETCH_MESSAGE,
                 'danger',
                 '',
                 3000
@@ -210,7 +218,7 @@ let fetchChangelog = repository => {
         .then(handleErrors)
         .then(response => response.text())
         .then(data => {
-            console.log(data);
+            // console.log(data);
             processChangelog(data);
         })
         .catch(error => console.log(error));
@@ -218,7 +226,6 @@ let fetchChangelog = repository => {
 
 document.querySelector('select').addEventListener('change', event => {
     let repositoryName = event.currentTarget.value;
-    console.log(repositoryName);
     if (timelineReference) {
         timelineReference.destroy();
     }
@@ -294,7 +301,7 @@ let processChangelog = (data) => {
     if (headingsWithSemVer.length === 0) {
         notifier.show(
             'Sorry !',
-            'We could not process correctly the CHANGELOG file.',
+            ERROR_PARSING_MESSAGE,
             'warning',
             '',
             3000

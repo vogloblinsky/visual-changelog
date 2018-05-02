@@ -11,7 +11,7 @@ ORIGIN_URL_WITH_CREDENTIALS=${ORIGIN_URL/\/\/github.com/\/\/$GITHUB_TOKEN@github
 
 echo "Compiling content"
 mkdir $TEMP_DIRECTORY || exit 1
-cp -r src $TEMP_DIRECTORY || exit 1
+cp -r src/* $TEMP_DIRECTORY || exit 1
 cp .gitignore $TEMP_DIRECTORY || exit 1
 
 cd $TEMP_DIRECTORY

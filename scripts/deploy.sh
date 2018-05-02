@@ -2,6 +2,8 @@
 echo "Starting deployment."
 echo "Target: gh-pages branch"
 
+TARGET_BRANCH="master:gh-pages"
+
 TEMP_DIRECTORY="tmp"
 CURRENT_COMMIT=`git rev-parse HEAD`
 ORIGIN_URL=`git config --get remote.origin.url`
@@ -22,7 +24,7 @@ git config user.email "vincent.ogloblinsky@gmail.com" || exit 1
 
 git add -A . || exit 1
 git commit --allow-empty -m "Regenerated static content for $CURRENT_COMMIT" || exit 1
-git push --force --quiet "$ORIGIN_URL_WITH_CREDENTIALS" gh-pages > /dev/null 2>&1
+git push --force "$ORIGIN_URL_WITH_CREDENTIALS" $TARGET_BRANCH > /dev/null 2>&1
 
 echo "Deployed successfully."
 exit 0

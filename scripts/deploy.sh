@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting deployment"
+echo "Starting deployment."
 echo "Target: gh-pages branch"
 
 TEMP_DIRECTORY="/tmp/__temp_static_content"

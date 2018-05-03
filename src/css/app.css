@@ -65,6 +65,7 @@ header {
 .choices {
     color: black;
     width: 450px;
+    height: 40px;
     margin-bottom: 0;
     display: inherit;
 }
@@ -83,6 +84,7 @@ header {
 .list-stars {
     float: right;
     margin-right: 5px; 
+    margin-top: -2px;
 }
 .list-stars-selected {
     margin-right: 30px;
@@ -105,14 +107,46 @@ header {
 }
 #visualization.html {
     padding: 5px 15px;
-    color: #4e4e4e;
+    color: #333333;
 }
 #visualization.html a {
     color: #4078c0;
 }
 
+#visualization.html h2, #visualization.html h3 {
+    color: #333333;
+}
+
+#visualization.html h2 {
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
+}
+
+#visualization.html h2 {
+    font-size: 1.25em;
+}
+
+#visualization.html code, #visualization.html tt {
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(27,31,35,0.05);
+    border-radius: 3px;
+}
+
 .vis-timeline {
     border-top: none;
+}
+
+.vis-item {
+    background-color: #e5f0fb;
+    border-color: #84a0c5;
+}
+
+.vis-current-time {
+    background-color: #e34c26;
 }
 
 /* alternating column backgrounds */

@@ -20,8 +20,11 @@ const GITHUB_BOOK_SVG = '<svg class="octicon octicon-repo" viewBox="0 0 12 16" v
 const ERROR_PARSING_MESSAGE = 
 `We could not process correctly the CHANGELOG file.
 We easily parse CHANGELOG that respect https://keepachangelog.com convention.
+Falling back to HTML.
 `;
 const ERROR_FETCH_MESSAGE = 'Could not fetch the CHANGELOG file.';
+
+const NOTIFIER_DELAY = 5000;
 
 let headingsWithSemVer = [];
 let REPOSITORIES = [];
@@ -30,21 +33,33 @@ let choicesItems = [];
 let choiceSelectReference;
 let timelineReference;
 
-let repositoryDropdown = document.getElementById('repository-dropdown');
+let _unified;
+
+let $repositoryDropdown;
+let $visualization;
 
 let uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
 
-fetch(`./data/changelogswithstars.json`)
-    .then(response => response.json())
-    .then(data => {
-        REPOSITORIES = uniqueArray(data);
-        ORDERED_REPOSITORIES = orderRepositoriesByStars();
-        
-        console.log(ORDERED_REPOSITORIES);
+document.addEventListener('DOMContentLoaded', function() {
+    start();
+});
 
-        prepareDataForChoiceSelect();
-        createChoiceSelect('stars');
-    });
+let start = () => {
+    $repositoryDropdown = document.getElementById('repository-dropdown');
+    $visualization = document.getElementById('visualization');
+
+    fetch(`./data/changelogswithstars.json`)
+        .then(response => response.json())
+        .then(data => {
+            REPOSITORIES = uniqueArray(data);
+            ORDERED_REPOSITORIES = orderRepositoriesByStars();
+            
+            // console.log(ORDERED_REPOSITORIES);
+
+            prepareDataForChoiceSelect();
+            createChoiceSelect('stars');
+        });
+}
 
 let prepareDataForChoiceSelect = () => {
     choicesItems = ORDERED_REPOSITORIES.map((repo) => {
@@ -90,7 +105,7 @@ let createChoiceSelect = (filter) => {
             return (a.customProperties.name !== b.customProperties.name ? (a.customProperties.name > b.customProperties.name ? 1 : -1) : 0);
         }
     }
-    choiceSelectReference = new Choices(repositoryDropdown, {
+    choiceSelectReference = new Choices($repositoryDropdown, {
         itemSelectText: '',
         choices: choicesItems,
         placeholderValue: 'Please Choose…',
@@ -200,6 +215,17 @@ let orderRepositoriesByStars = () => {
     );
 };
 
+let renderMarkdownToHTML = (rawMarkdown) => {
+    unified()
+        .use(markdown)
+        .use(markdownhtml)
+        .process(rawMarkdown, function (err, file) {
+            if (err) throw err;
+            $visualization.innerHTML = file;
+            $visualization.classList.add('html');
+        });
+};
+
 let fetchChangelog = repository => {
     function handleErrors(response) {
         if (!response.ok) {
@@ -208,7 +234,7 @@ let fetchChangelog = repository => {
                 ERROR_FETCH_MESSAGE,
                 'danger',
                 '',
-                3000
+                NOTIFIER_DELAY
             );
             throw Error(response.statusText);
         }
@@ -235,12 +261,12 @@ document.querySelector('select').addEventListener('change', event => {
 });
 
 let displayVizualisation = () => {
-    document.getElementById('visualization').style.display = 'block';
+    $visualization.style.display = 'block';
 }
 
-let processChangelog = (data) => {
-    let _unified = unified().use(markdown);
-    let markdownAST = _unified.parse(data);
+let processChangelog = (rawMardown) => {
+    _unified = unified().use(markdown);
+    let markdownAST = _unified.parse(rawMardown);
 
     headingsWithSemVer = [];
 
@@ -304,12 +330,13 @@ let processChangelog = (data) => {
             ERROR_PARSING_MESSAGE,
             'warning',
             '',
-            3000
+            NOTIFIER_DELAY
         );
         hideSpinner();
+        renderMarkdownToHTML(rawMardown);
+    } else {
+        createGraph();
     }
-
-    createGraph();
 }
 
 /*fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
@@ -346,7 +373,6 @@ let createGraph = () => {
         });
     }
 
-    let container = document.getElementById('visualization');
     let options = {
         groupOrder: 'content',
         min: minDate.subtract(2, 'M'),
@@ -359,8 +385,12 @@ let createGraph = () => {
         onInitialDrawComplete: hideSpinner
     };
 
-    timelineReference = new vis.Timeline(container, items, options);
+    $visualization.innerHTML = '';
+
+    timelineReference = new vis.Timeline($visualization, items, options);
     timelineReference.setGroups(groups);
+
+    $visualization.classList.remove('html');
 };
 
 let spinner = document.querySelector('.spinner');

@@ -7,6 +7,7 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
+    overflow-y: hidden;
 }
 
 header {
@@ -101,6 +102,10 @@ header {
     flex-grow: 2;
     overflow-y: auto;
 }
+#visualization.html {
+    padding: 5px 15px;
+    color: #4e4e4e;
+}
 
 footer {
     background: #4a69bd;
@@ -110,6 +115,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
 }
 footer .infos {
     display: flex;

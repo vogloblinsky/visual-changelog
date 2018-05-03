@@ -6,7 +6,8 @@
     "scripts": {
         "build-unified": "./node_modules/.bin/browserify node_modules/unified/index.js -s unified | uglifyjs -c > src/js/lib/unified.min.js",
         "build-remark-parse": "./node_modules/.bin/browserify node_modules/remark-parse/index.js -s markdown | uglifyjs -c > src/js/lib/remark-parse.min.js",
-        "build-libs": "npm run build-unified && npm run build-remark-parse"
+        "build-remark-html": "./node_modules/.bin/browserify node_modules/remark-html/index.js -s markdownhtml | uglifyjs -c > src/js/lib/remark-html.min.js",
+        "build-libs": "npm run build-unified && npm run build-remark-parse && npm run build-remark-html"
     },
     "repository": {
         "type": "git",
@@ -22,6 +23,7 @@
     },
     "homepage": "https://github.com/vogloblinsky/visual-changelog#readme",
     "dependencies": {
+        "remark-html": "^7.0.0",
         "remark-parse": "^5.0.0",
         "unified": "^6.1.6"
     },

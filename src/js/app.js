@@ -355,6 +355,7 @@ let createGraph = () => {
             axis: 'top',
             item: 'top'
         },
+        zoomMin: 1000 * 60 * 60 * 24 * 7 * 4, // one month in milliseconds
         onInitialDrawComplete: hideSpinner
     };
 

@@ -1,6 +1,5 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background: #f1f1f1;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -11,10 +10,8 @@ body {
 }
 
 header {
-    background: #4a69bd;
     width: 100%;
     text-align: center;
-    color: white;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: 1.5em;
@@ -24,12 +21,8 @@ header {
 .spinner {
     display: none;
 }
-.spinner > div {
-    background: #38ada9;
-}
 
 .synopsis-container {
-    background: #6a89cc;
     width: 100%;
     text-align: center;
     color: white;
@@ -38,10 +31,8 @@ header {
     font-style: italic;
 }
 .repositories-form {
-    background: #82ccdd;
     width: 100%;
     flex-shrink: 0;
-    color: white;
     padding-top: 10px;
     padding-bottom: 10px;
 
@@ -52,6 +43,11 @@ header {
 
 .repositories-form select {
     padding: 5px;
+    width: 450px;
+    height: 40px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 2.5px;
 }
 
 .order-buttons {
@@ -81,7 +77,9 @@ header {
 }
 .choices__list--dropdown {
     z-index: 2;
+    width: calc(100% - 2px);
 }
+
 .list-stars {
     float: right;
     margin-right: 5px; 
@@ -89,6 +87,7 @@ header {
 .list-stars-selected {
     margin-right: 30px;
 }
+
 .repo-name {
     position: absolute;
     left: 35px;
@@ -98,6 +97,8 @@ header {
     position: absolute;
 }
 
+/* Main vizualisation */
+
 #visualization {
     flex-grow: 2;
     overflow-y: auto;
@@ -106,26 +107,12 @@ header {
     padding: 5px 15px;
     color: #4e4e4e;
 }
+#visualization.html a {
+    color: #4078c0;
+}
 
-footer {
-    background: #4a69bd;
-    font-size: 0.8em;
-    padding: 10px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-}
-footer .infos {
-    display: flex;
-    align-items: center;
-}
-footer .infos > * {
-    margin-right: 5px;
-}
-footer a {
-    color: #38ada9;
+.vis-timeline {
+    border-top: none;
 }
 
 /* alternating column backgrounds */
@@ -139,9 +126,104 @@ footer a {
     font-weight: bold;
 }
 
+/* FOOTER */
+
+footer {
+    font-size: 0.8em;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+footer .infos {
+    display: flex;
+    align-items: center;
+}
+footer .infos > * {
+    margin-right: 5px;
+}
+
 /* Notifier */
 
 .notifier-container {
     top: initial;
-    bottom: 5px;
+    bottom: 40px;
+}
+
+/* THEMES */
+
+.theme-blue header {
+    background: #4a69bd;
+    color: white;
+}
+
+.theme-blue .synopsis-container {
+    background: #6a89cc;
+    color: white;
+}
+
+.theme-blue body {
+    background: #f6f6f6;
+}
+
+.theme-blue .repositories-form {
+    background: #82ccdd;
+    color:white;
+}
+
+.theme-blue footer {
+    background: #4a69bd;
+    border-top: 1px solid #e5e5e5;
+    color: white;
+}
+
+.theme-blue footer a {
+    color: #38ada9;
+}
+
+.theme-blue .spinner > div {
+    background: #38ada9;
+}
+
+
+
+.theme-light header {
+    background: #f5f5f5;
+    border-bottom: 1px solid #e5e5e5;
+    color: #333333;
+}
+
+.theme-light .synopsis-container {
+    background: #fafafa;
+    color: #586069;
+    border-bottom: 1px solid #e2e4e8;
+}
+
+.theme-blue body {
+    background: #f6f6f6;
+}
+
+.theme-light .repositories-form {
+    background: #fdfdfd;
+    color: #888888;
+    border-bottom: 1px solid #e2e4e8;
+}
+
+.theme-light footer {
+    background: #fafafa;
+    border-top: 1px solid #e5e5e5;
+    color: #333333;
+}
+
+.theme-light footer a {
+    color: #4078c0;
+}
+
+.theme-light .spinner > div {
+    background: #333333;
+}
+
+.theme-light .vis-timeline {
+    border-bottom: 1px solid #e2e4e8;
 }

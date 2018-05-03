@@ -1,5 +1,5 @@
 body {
-    font-family: 'Helvetica';
+    font-family: 'Roboto', sans-serif;
     background: #f1f1f1;
     margin: 0;
     display: flex;
@@ -33,7 +33,9 @@ header {
     text-align: center;
     color: white;
 }
-
+.synopsis {
+    font-style: italic;
+}
 .repositories-form {
     background: #82ccdd;
     width: 100%;
@@ -108,6 +110,13 @@ footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+footer .infos {
+    display: flex;
+    align-items: center;
+}
+footer .infos > * {
+    margin-right: 5px;
 }
 footer a {
     color: #38ada9;

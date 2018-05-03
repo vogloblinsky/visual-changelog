@@ -5,8 +5,19 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Visual changelog</title>
-    <meta name="description" content="">
+
+    <meta property="og:title" content="Visual changelog" />
+    <meta name="description" content="Visualize the CHANGELOG file of Github repositories in a beautiful timeline" />
+    <meta property="og:description" content="Visualize the CHANGELOG file of Github repositories in a beautiful timeline" />
+    <meta property="og:image" content="./images/app.png" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./images/icon.png" />
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700" rel="stylesheet">
+
     <link href="./css/lib/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" rel="preload" as="style">
     <link href="./css/lib/spinkit.min.css" rel="stylesheet" type="text/css">
     <link href="./css/lib/notifier.min.css" rel="stylesheet" type="text/css">
@@ -19,11 +30,11 @@
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
     <![endif]-->
 
-    <header>Visual changelog</header>
+    <header>VISUAL CHANGELOG</header>
 
     <div class="synopsis-container">
-        <p class="synopsis">Visualize the CHANGELOG file of Github repositories extracted from a public BIGQUERY dataset.
-            (3084 in 2018-04-01 with +500 stars)</p>
+        <p class="synopsis">Visualize the CHANGELOG file of Github repositories extracted from a public BIGQUERY dataset. (3084 on 2018-04-01
+            with +500 &#9733;)</p>
     </div>
 
     <div class="repositories-form">
@@ -40,14 +51,23 @@
         </div>
     </div>
 
-    <footer> 
+    <footer>
         <div class="infos">
-            Built with ❤ by <a href="https://twitter.com/vogloblinsky" target="_blank">Vincent Ogloblinsky — @vogloblinsky</a>
+            <span>Built with</span>
+            <span style="color: #eb2f06;">❤</span>
+            <span>by</span>
+            <a href="https://twitter.com/vogloblinsky" target="_blank">Vincent Ogloblinsky</a>
+            <span>-</span>
+            <a href="https://twitter.com/vogloblinsky?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">Follow @vogloblinsky</a>
         </div>
         <div class="github">
+            <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Visualize%20Changelogs%20files%20with%20visual-changelog%20tool%20by@vogloblinsky&url=https://vogloblinsky.github.io/visual-changelog/">
+                Tweet</a>
             <img src="https://img.shields.io/github/stars/vogloblinsky/visual-changelog.svg?style=social&label=Stars" />
         </div>
     </footer>
+
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     <script src="js/lib/notifier.min.js"></script>
     <script src="js/lib/unified.min.js"></script>

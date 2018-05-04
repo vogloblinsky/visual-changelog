@@ -2,6 +2,8 @@
 
 Visualize a changelog from an open-source project in your browser.
 
+![](src/images/app.png)
+
 ## Details
 
 The list of repositories is extracted from a query in BIGQUERY, and filtered with only repositories with more than 500 stars.

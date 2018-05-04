@@ -184,6 +184,9 @@ footer .infos {
 footer .infos > * {
     margin-right: 5px;
 }
+footer .github-link {
+    margin-left: 5px;
+}
 
 /* Notifier */
 

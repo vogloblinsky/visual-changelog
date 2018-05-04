@@ -109,11 +109,14 @@ header {
     padding: 5px 15px;
     color: #333333;
 }
+#visualization.html li, .swal2-markdown #swal2-content li {
+    line-height: 1.5;
+}
 #visualization.html a, .swal2-markdown #swal2-content a {
     color: #4078c0;
 }
 
-#visualization.html h2, #visualization.html h3, .swal2-markdown #swal2-content h2, , .swal2-markdown #swal2-content h3 {
+#visualization.html h2, #visualization.html h3, .swal2-markdown #swal2-content h2, .swal2-markdown #swal2-content h3 {
     color: #333333;
 }
 

@@ -295,7 +295,7 @@ document.querySelector('select').addEventListener('change', event => {
 });
 
 let populateGithubLink = (selectedRepository) => {
-    $githubLink.style.display = 'block';
+    $githubLink.style.opacity = 1;
     $githubLink.setAttribute('href', 'https://github.com/' + selectedRepository);
 }
 

@@ -53,7 +53,7 @@ header {
 .repositories-form .github-link {
     cursor: pointer;
     margin-right: 10px;
-    display: none;
+    opacity: 0;
 }
 
 .order-buttons {

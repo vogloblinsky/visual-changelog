@@ -5,6 +5,8 @@ branches:
 node_js:
 - '10'
 before_script:
+- npm install
+- npm run build
 - chmod +x ./scripts/deploy.sh
 script: "./scripts/deploy.sh"
 env:

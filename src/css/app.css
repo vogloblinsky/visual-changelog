@@ -18,6 +18,7 @@ header {
     font-weight: bold;
     display: flex;
     justify-content: center;
+    flex-shrink: 0;
 }
 header img {
     margin-right: 5px;

@@ -255,8 +255,6 @@ let processChangelog = (rawMardown) => {
     let _unified = unified().use(markdown);
     let markdownAST = _unified.parse(rawMardown);
 
-    console.log(markdownAST);
-
     headingsWithSemVer = [];
 
     let lastVersionIndex = null;

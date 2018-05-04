@@ -5,13 +5,18 @@ const DATE_REGEX = () => /(\d{4})-(\d{2})-(\d{2})/gi;
 
 const GITHUB_BOOK_SVG = '<svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>'
 
+const $ERROR_PARSING_MESSAGE = `
+    <div class="error-parsing-message">We could not process correctly the CHANGELOG file.<br/>
+    We <span style="color: #e34c26;">❤</span> CHANGELOG files that respect <a href="https://keepachangelog.com" target="_blank">https://keepachangelog.com</a> convention.</div>
+`
+
 const ERROR_PARSING_MESSAGE =
     `We could not process correctly the CHANGELOG file.
 We easily parse CHANGELOG that respect https://keepachangelog.com convention.
 Falling back to HTML.
 `;
 const ERROR_FETCH_MESSAGE = 'Could not fetch the CHANGELOG file.';
-
+const UPDATE_AVAILABLE_MESSAGE = 'New update available! Reload the page to see the latest juicy changes.';
 const NOTIFIER_DELAY = 5000;
 
 let headingsWithSemVer = [];
@@ -24,6 +29,7 @@ let timelineReference;
 let selectedRepository;
 let $repositoryDropdown;
 let $visualization;
+let $githubLink;
 
 let uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
 
@@ -32,13 +38,39 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+            console.log(reg);
+            reg.onupdatefound = () => {
+                console.log('update found');
+                const installingWorker = reg.installing;
+                installingWorker.onstatechange = () => {
+                    switch (installingWorker.state) {
+                        case 'installed':
+                            if (navigator.serviceWorker.controller) {
+                                notifier.show(
+                                    '',
+                                    UPDATE_AVAILABLE_MESSAGE,
+                                    'info',
+                                    '',
+                                    NOTIFIER_DELAY
+                                );
+                            }
+                            break;
+                        case 'redundant':
+                            break;
+                        default:
+                            break;
+                    }
+                };
+            }
+        });
     });
 }
 
 let start = () => {
     $repositoryDropdown = document.getElementById('repository-dropdown');
     $visualization = document.getElementById('visualization');
+    $githubLink = document.querySelector('.github-link');
 
     fetch(`./data/changelogswithstars.json`)
         .then(response => response.json())
@@ -194,11 +226,11 @@ let createChoiceSelect = (filter) => {
 let orderRepositoriesAlphabetically = () => {
     return REPOSITORIES.sort(
         (a, b) =>
-            a.name.split('/')[1] !== b.name.split('/')[1]
-                ? a.name.split('/')[1] < b.name.split('/')[1]
-                    ? -1
-                    : 1
-                : 0
+        a.name.split('/')[1] !== b.name.split('/')[1] ?
+        a.name.split('/')[1] < b.name.split('/')[1] ?
+        -1 :
+        1 :
+        0
     );
 };
 let orderRepositoriesByStars = () => {
@@ -213,7 +245,7 @@ let renderMarkdownToHTML = (rawMarkdown) => {
         .use(markdownhtml)
         .process(rawMarkdown, function (err, file) {
             if (err) throw err;
-            $visualization.innerHTML = file;
+            $visualization.innerHTML = $ERROR_PARSING_MESSAGE + file;
             $visualization.classList.add('html');
         });
 };
@@ -231,6 +263,7 @@ let fetchChangelog = repository => {
             NOTIFIER_DELAY
         );
     }
+
     function handleErrors(response) {
         if (!response.ok) {
             displayFetchError();
@@ -257,8 +290,14 @@ document.querySelector('select').addEventListener('change', event => {
     }
     displayVizualisation();
     showSpinner();
+    populateGithubLink(selectedRepository);
     fetchChangelog(selectedRepository);
 });
+
+let populateGithubLink = (selectedRepository) => {
+    $githubLink.style.display = 'block';
+    $githubLink.setAttribute('href', 'https://github.com/' + selectedRepository);
+}
 
 let displayVizualisation = () => {
     $visualization.style.display = 'block';
@@ -332,13 +371,13 @@ let processChangelog = (rawMardown) => {
     });
 
     if (headingsWithSemVer.length === 0) {
-        notifier.show(
+        /*notifier.show(
             'Sorry !',
             ERROR_PARSING_MESSAGE,
             'warning',
             '',
             NOTIFIER_DELAY
-        );
+        );*/
         hideSpinner();
         renderMarkdownToHTML(rawMardown);
     } else {

@@ -50,6 +50,12 @@ header {
     border-radius: 2.5px;
 }
 
+.repositories-form .github-link {
+    cursor: pointer;
+    margin-right: 10px;
+    display: none;
+}
+
 .order-buttons {
     width: 50px;
     height: 40px;
@@ -97,6 +103,15 @@ header {
 .octicon {
     margin: 0 5px 0 0;
     position: absolute;
+}
+
+.error-parsing-message {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: .75rem 1.25rem;
+    color: #856404;
+    margin-top: 8px;
+    text-align: center;
 }
 
 /* Main vizualisation */

@@ -298,6 +298,9 @@ let populateGithubLink = (selectedRepository) => {
     $githubLink.style.opacity = 1;
     $githubLink.setAttribute('href', 'https://github.com/' + selectedRepository);
 }
+let hideGithubLink = () => {
+    $githubLink.style.opacity = 0;
+}
 
 let displayVizualisation = () => {
     $visualization.style.display = 'block';
@@ -453,6 +456,8 @@ let createGraph = () => {
         });
     });
 
+    timelineReference.setWindow(moment().subtract(2, 'years'), moment());
+
     $visualization.classList.remove('html');
 };
 
@@ -489,6 +494,7 @@ let cleanOrderButtonsState = () => {
             orderType = 'stars';
         }
         prepareDataForChoiceSelect();
+        hideGithubLink();
         createChoiceSelect(orderType);
     });
 });

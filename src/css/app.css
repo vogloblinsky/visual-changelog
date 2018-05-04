@@ -114,13 +114,14 @@ header {
 }
 #visualization.html a, .swal2-markdown #swal2-content a {
     color: #4078c0;
+    text-decoration: none;
 }
 
 #visualization.html h2, #visualization.html h3, .swal2-markdown #swal2-content h2, .swal2-markdown #swal2-content h3 {
     color: #333333;
 }
 
-#visualization.html h2 {
+#visualization.html h1, .swal2-markdown #swal2-content h1 {
     border-bottom: 1px solid #eaecef;
     padding-bottom: 0.3em;
     font-size: 1.5em;
@@ -137,6 +138,19 @@ header {
     font-size: 85%;
     background-color: rgba(27,31,35,0.05);
     border-radius: 3px;
+}
+
+#visualization.html pre, .swal2-markdown #swal2-content pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f6f8fa;
+    border-radius: 3px;
+}
+
+#visualization.html pre code, .swal2-markdown #swal2-content pre code, #visualization.html pre tt, .swal2-markdown #swal2-content pre tt {
+    background-color: transparent;
 }
 
 .vis-timeline {

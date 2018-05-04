@@ -4,13 +4,18 @@
     "description": "Visualize a changelog from an open-source project in your browser",
     "main": "index.js",
     "scripts": {
-        "build-unified": "./node_modules/.bin/browserify node_modules/unified/index.js -s unified | uglifyjs -c > src/js/lib/unified.min.js",
-        "build-remark-parse": "./node_modules/.bin/browserify node_modules/remark-parse/index.js -s markdown | uglifyjs -c > src/js/lib/remark-parse.min.js",
-        "build-remark-html": "./node_modules/.bin/browserify node_modules/remark-html/index.js -s markdownhtml | uglifyjs -c > src/js/lib/remark-html.min.js",
+        "build-unified": "npx browserify node_modules/unified/index.js -s unified | uglifyjs -c > src/js/lib/unified.min.js",
+        "build-remark-parse": "npx browserify node_modules/remark-parse/index.js -s markdown | uglifyjs -c > src/js/lib/remark-parse.min.js",
+        "build-remark-html": "npx browserify node_modules/remark-html/index.js -s markdownhtml | uglifyjs -c > src/js/lib/remark-html.min.js",
         "build-libs": "npm run build-unified && npm run build-remark-parse && npm run build-remark-html",
-        "prepare-build": "rm -rf dist && mkdir dist",
-        "copy-assets": "cp -r src/data dist && cp -r src/images dist",
-        "build": "npm run prepare-build && npm run copy-assets"
+        "prepare-build": "rm -rf dist && mkdir dist && mkdir dist/css && mkdir dist/js",
+        "build-index": "npx useref src/index.html dist/",
+        "build-vendor-css": "npx concat -o dist/css/vendor.css ./src/css/lib/*.css",
+        "build-app-css": "npx uglifycss dist/css/app.css --output dist/css/app.css",
+        "build-vendor-js": "npx concat -o dist/js/vendor.js ./src/js/lib/*.js",
+        "build-app-js": "npx babel src/js/app.js --out-file dist/js/app.js && npx uglifyjs dist/js/app.js -o dist/js/app.js",
+        "copy-assets": "cp -r src/data dist && cp -r src/images dist && cp src/css/app.css dist/css && cp src/js/app.js dist/js",
+        "build": "npm run prepare-build && npm run copy-assets && npm run build-index && npm run build-vendor-css && npm run build-vendor-js && npm run build-app-css && npm run build-app-js"
     },
     "repository": {
         "type": "git",
@@ -31,7 +36,13 @@
         "unified": "^6.1.6"
     },
     "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
         "browserify": "^16.2.0",
-        "uglifyify": "^5.0.0"
+        "concat": "^1.0.3",
+        "uglify-es": "^3.3.9",
+        "uglifycss": "0.0.29",
+        "uglifyify": "^5.0.0",
+        "useref-cli": "^1.0.0"
     }
 }

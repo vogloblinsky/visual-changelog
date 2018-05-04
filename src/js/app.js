@@ -5,8 +5,8 @@ const DATE_REGEX = () => /(\d{4})-(\d{2})-(\d{2})/gi;
 
 const GITHUB_BOOK_SVG = '<svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>'
 
-const ERROR_PARSING_MESSAGE = 
-`We could not process correctly the CHANGELOG file.
+const ERROR_PARSING_MESSAGE =
+    `We could not process correctly the CHANGELOG file.
 We easily parse CHANGELOG that respect https://keepachangelog.com convention.
 Falling back to HTML.
 `;
@@ -27,9 +27,14 @@ let $visualization;
 
 let uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     start();
 });
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+    });
+}
 
 let start = () => {
     $repositoryDropdown = document.getElementById('repository-dropdown');
@@ -40,7 +45,7 @@ let start = () => {
         .then(data => {
             REPOSITORIES = uniqueArray(data);
             ORDERED_REPOSITORIES = orderRepositoriesByStars();
-            
+
             // console.log(ORDERED_REPOSITORIES);
 
             prepareDataForChoiceSelect();
@@ -71,7 +76,7 @@ let prepareDataForChoiceSelect = () => {
         disabled: true,
         selected: false
     });
-    
+
     if (choiceSelectReference) {
         choiceSelectReference.destroy();
     }
@@ -80,7 +85,7 @@ let prepareDataForChoiceSelect = () => {
 let createChoiceSelect = (filter) => {
     let sortFilterMethod;
     if (filter === 'stars') {
-        sortFilterMethod = function(a, b) {
+        sortFilterMethod = function (a, b) {
             if (typeof a.customProperties !== 'undefined' && typeof b.customProperties !== 'undefined') {
                 return (a.customProperties.stars !== b.customProperties.stars ? (a.customProperties.stars < b.customProperties.stars ? 1 : -1) : 0);
             } else {
@@ -88,7 +93,7 @@ let createChoiceSelect = (filter) => {
             }
         }
     } else {
-        sortFilterMethod = function(a, b) {
+        sortFilterMethod = function (a, b) {
             return (a.customProperties.name !== b.customProperties.name ? (a.customProperties.name > b.customProperties.name ? 1 : -1) : 0);
         }
     }
@@ -98,40 +103,40 @@ let createChoiceSelect = (filter) => {
         placeholderValue: 'Please Choose…',
         sortFilter: sortFilterMethod,
         shouldSort: false,
-        callbackOnCreateTemplates: function(template) {
+        callbackOnCreateTemplates: function (template) {
             var classNames = this.config.classNames;
             return {
                 item: data => {
                     if (data.customProperties) {
-                            return template(`
+                        return template(`
                             <div class="${classNames.item} ${
-                                    data.highlighted
-                                        ? classNames.highlightedState
-                                        : classNames.itemSelectable
-                                }" data-item data-id="${data.id}" data-value="${
-                                    data.value
-                                }" ${data.active ? 'aria-selected="true"' : ''} ${
-                                    data.disabled ? 'aria-disabled="true"' : ''
-                                }>
+                            data.highlighted
+                                ? classNames.highlightedState
+                                : classNames.itemSelectable
+                            }" data-item data-id="${data.id}" data-value="${
+                            data.value
+                            }" ${data.active ? 'aria-selected="true"' : ''} ${
+                            data.disabled ? 'aria-disabled="true"' : ''
+                            }>
                                 ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars list-stars-selected">${data.customProperties.stars} &#9733;</span>
                             </div>
                         `);
                     } else {
                         return template(`
                         <div class="${classNames.item} ${classNames.itemChoice} ${
-                                data.disabled
-                                    ? classNames.itemDisabled
-                                    : classNames.itemSelectable
+                            data.disabled
+                                ? classNames.itemDisabled
+                                : classNames.itemSelectable
                             }" data-select-text="${
-                                this.config.itemSelectText
+                            this.config.itemSelectText
                             }" data-choice ${
-                                data.disabled
-                                    ? 'data-choice-disabled aria-disabled="true"'
-                                    : 'data-choice-selectable'
+                            data.disabled
+                                ? 'data-choice-disabled aria-disabled="true"'
+                                : 'data-choice-selectable'
                             } data-id="${data.id}" data-value="${data.value}" ${
-                                data.groupId > 0
-                                    ? 'role="treeitem"'
-                                    : 'role="option"'
+                            data.groupId > 0
+                                ? 'role="treeitem"'
+                                : 'role="option"'
                             }>
                             <span>${data.label}</span>
                         </div>
@@ -142,40 +147,40 @@ let createChoiceSelect = (filter) => {
                     if (data.customProperties) {
                         return template(`
                             <div class="${classNames.item} ${classNames.itemChoice} ${
-                                    data.disabled
-                                        ? classNames.itemDisabled
-                                        : classNames.itemSelectable
-                                }" data-select-text="${
-                                    this.config.itemSelectText
-                                }" data-choice ${
-                                    data.disabled
-                                        ? 'data-choice-disabled aria-disabled="true"'
-                                        : 'data-choice-selectable'
-                                } data-id="${data.id}" data-value="${data.value}" ${
-                                    data.groupId > 0
-                                        ? 'role="treeitem"'
-                                        : 'role="option"'
-                                }>
+                            data.disabled
+                                ? classNames.itemDisabled
+                                : classNames.itemSelectable
+                            }" data-select-text="${
+                            this.config.itemSelectText
+                            }" data-choice ${
+                            data.disabled
+                                ? 'data-choice-disabled aria-disabled="true"'
+                                : 'data-choice-selectable'
+                            } data-id="${data.id}" data-value="${data.value}" ${
+                            data.groupId > 0
+                                ? 'role="treeitem"'
+                                : 'role="option"'
+                            }>
                                 ${GITHUB_BOOK_SVG}<span class="repo-name">${data.label}</span>&nbsp;<span class="list-stars">${data.customProperties.stars} &#9733;</span>
                             </div>
                         `);
                     } else {
                         return template(`
                             <div class="${classNames.item} ${classNames.itemChoice} ${
-                                    data.disabled
-                                        ? classNames.itemDisabled
-                                        : classNames.itemSelectable
-                                }" data-select-text="${
-                                    this.config.itemSelectText
-                                }" data-choice ${
-                                    data.disabled
-                                        ? 'data-choice-disabled aria-disabled="true"'
-                                        : 'data-choice-selectable'
-                                } data-id="${data.id}" data-value="${data.value}" ${
-                                    data.groupId > 0
-                                        ? 'role="treeitem"'
-                                        : 'role="option"'
-                                }>
+                            data.disabled
+                                ? classNames.itemDisabled
+                                : classNames.itemSelectable
+                            }" data-select-text="${
+                            this.config.itemSelectText
+                            }" data-choice ${
+                            data.disabled
+                                ? 'data-choice-disabled aria-disabled="true"'
+                                : 'data-choice-selectable'
+                            } data-id="${data.id}" data-value="${data.value}" ${
+                            data.groupId > 0
+                                ? 'role="treeitem"'
+                                : 'role="option"'
+                            }>
                                 <span class="repo-name">${data.label}</span>
                             </div>
                         `);
@@ -214,15 +219,21 @@ let renderMarkdownToHTML = (rawMarkdown) => {
 };
 
 let fetchChangelog = repository => {
+    function displayFetchError() {
+        if (spinner) {
+            hideSpinner();
+        }
+        notifier.show(
+            'Oups !',
+            ERROR_FETCH_MESSAGE,
+            'danger',
+            '',
+            NOTIFIER_DELAY
+        );
+    }
     function handleErrors(response) {
         if (!response.ok) {
-            notifier.show(
-                'Oups !',
-                ERROR_FETCH_MESSAGE,
-                'danger',
-                '',
-                NOTIFIER_DELAY
-            );
+            displayFetchError();
             throw Error(response.statusText);
         }
         return response;
@@ -234,7 +245,9 @@ let fetchChangelog = repository => {
             // console.log(data);
             processChangelog(data);
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+            displayFetchError();
+        });
 };
 
 document.querySelector('select').addEventListener('change', event => {
@@ -386,10 +399,10 @@ let createGraph = () => {
             children: clickedVersion.children
         };
         let versionDetails = unified()
-                    .use(markdown)
-                    .use(markdownhtml)
-                    .stringify(childrenTreeOfClickedVersion);
-                    
+            .use(markdown)
+            .use(markdownhtml)
+            .stringify(childrenTreeOfClickedVersion);
+
         Swal({
             html: versionDetails,
             showCloseButton: true,

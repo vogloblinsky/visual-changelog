@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     start();
 });
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    /*window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then(reg => {
             console.log(reg);
             reg.onupdatefound = () => {
@@ -64,7 +64,7 @@ if ('serviceWorker' in navigator) {
                 };
             }
         });
-    });
+    });*/
 }
 
 let start = () => {

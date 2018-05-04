@@ -105,15 +105,15 @@ header {
     flex-grow: 2;
     overflow-y: auto;
 }
-#visualization.html {
+#visualization.html, .swal2-markdown #swal2-content {
     padding: 5px 15px;
     color: #333333;
 }
-#visualization.html a {
+#visualization.html a, .swal2-markdown #swal2-content a {
     color: #4078c0;
 }
 
-#visualization.html h2, #visualization.html h3 {
+#visualization.html h2, #visualization.html h3, .swal2-markdown #swal2-content h2, , .swal2-markdown #swal2-content h3 {
     color: #333333;
 }
 
@@ -123,11 +123,11 @@ header {
     font-size: 1.5em;
 }
 
-#visualization.html h2 {
+#visualization.html h3, .swal2-markdown #swal2-content h3 {
     font-size: 1.25em;
 }
 
-#visualization.html code, #visualization.html tt {
+#visualization.html code, #visualization.html tt, .swal2-markdown #swal2-content code, .swal2-markdown #swal2-content tt {
     font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
     padding: 0.2em 0.4em;
     margin: 0;
@@ -147,6 +147,10 @@ header {
 
 .vis-current-time {
     background-color: #e34c26;
+}
+
+.vis-item.vis-selected {
+    border-color: #f1e05a;
 }
 
 /* alternating column backgrounds */
@@ -183,6 +187,29 @@ footer .infos > * {
 .notifier-container {
     top: initial;
     bottom: 40px;
+}
+
+/* modal */
+
+body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown), html.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) {
+    height: 100%;
+}
+
+.swal2-popup #swal2-content {
+    text-align: left;
+    font-size: 16px;
+}
+
+.swal2-popup {
+    border-radius: 0;
+}
+
+.swal2-popup .swal2-close:focus, .swal2-markdown #swal2-content a:focus {
+    outline: none;
+}
+
+.swal2-popup .swal2-close:hover {
+    color: #e34c26;
 }
 
 /* THEMES */

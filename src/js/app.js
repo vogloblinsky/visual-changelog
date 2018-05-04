@@ -1,15 +1,3 @@
-// Angular : https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md
-// ts-stats : https://raw.githubusercontent.com/compodoc/ts-stats/master/CHANGELOG.md
-// parse-changelog test : https://raw.githubusercontent.com/SamyPesse/parse-changelog/master/test/CHANGES.md
-// compodoc : https://raw.githubusercontent.com/compodoc/compodoc/develop/CHANGELOG.md
-// vue.js : no CHANGELOG.md
-// react : https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
-// fs-extra : https://raw.githubusercontent.com/jprichardson/node-fs-extra/master/CHANGELOG.md
-// commander.js : https://raw.githubusercontent.com/tj/commander.js/master/CHANGELOG.md
-// request : https://raw.githubusercontent.com/request/request/master/CHANGELOG.md
-
-// keep a changelog : https://raw.githubusercontent.com/olivierlacan/keep-a-changelog/master/CHANGELOG.md
-
 // https://github.com/sindresorhus/semver-regex
 const SEMVER_REGEX = () =>
     /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z-]+(?:\.[\da-z-]+)*)?(?:\+[\da-z-]+(?:\.[\da-z-]+)*)?\b/gi;
@@ -33,8 +21,7 @@ let choicesItems = [];
 let choiceSelectReference;
 let timelineReference;
 
-let _unified;
-
+let selectedRepository;
 let $repositoryDropdown;
 let $visualization;
 
@@ -251,13 +238,13 @@ let fetchChangelog = repository => {
 };
 
 document.querySelector('select').addEventListener('change', event => {
-    let repositoryName = event.currentTarget.value;
+    selectedRepository = event.currentTarget.value;
     if (timelineReference) {
         timelineReference.destroy();
     }
     displayVizualisation();
     showSpinner();
-    fetchChangelog(repositoryName);
+    fetchChangelog(selectedRepository);
 });
 
 let displayVizualisation = () => {
@@ -265,20 +252,24 @@ let displayVizualisation = () => {
 }
 
 let processChangelog = (rawMardown) => {
-    _unified = unified().use(markdown);
+    let _unified = unified().use(markdown);
     let markdownAST = _unified.parse(rawMardown);
+
+    console.log(markdownAST);
 
     headingsWithSemVer = [];
 
+    let lastVersionIndex = null;
+
     markdownAST.children.filter(node => {
+        let nodeChildren = node.children,
+            hasSemVer = false,
+            hasTime = false,
+            version = '',
+            time = '';
         if (node.type === 'heading') {
             let i = 0,
-                nodeChildren = node.children,
-                len = nodeChildren.length,
-                hasSemVer = false,
-                hasTime = false,
-                version = '',
-                time = '';
+                len = nodeChildren.length;
             // Find nodes of type link with text matching semver regex
             for (i; i < len; i++) {
                 if (nodeChildren[i].type === 'link') {
@@ -317,10 +308,15 @@ let processChangelog = (rawMardown) => {
                 if (hasTime) {
                     headingsWithSemVer.push({
                         time: time,
-                        version: version
+                        version: version,
+                        children: []
                     });
+                    lastVersionIndex = headingsWithSemVer.length - 1;
                 }
             }
+        }
+        if (lastVersionIndex !== null) {
+            headingsWithSemVer[lastVersionIndex].children.push(node);
         }
     });
 
@@ -338,12 +334,6 @@ let processChangelog = (rawMardown) => {
         createGraph();
     }
 }
-
-/*fetch(`https://raw.githubusercontent.com/angular/angular/master/CHANGELOG.md`)
-    .then(response => response.text())
-    .then(data => {
-        
-    });*/
 
 let createGraph = () => {
     let now = moment()
@@ -389,6 +379,29 @@ let createGraph = () => {
 
     timelineReference = new vis.Timeline($visualization, items, options);
     timelineReference.setGroups(groups);
+
+    timelineReference.on('select', function (properties) {
+        let indexOfClickedVersion = properties.items[0],
+            clickedVersion = headingsWithSemVer[indexOfClickedVersion];
+        let childrenTreeOfClickedVersion = {
+            type: 'root',
+            children: clickedVersion.children
+        };
+        let versionDetails = unified()
+                    .use(markdown)
+                    .use(markdownhtml)
+                    .stringify(childrenTreeOfClickedVersion);
+                    
+        Swal({
+            html: versionDetails,
+            showCloseButton: true,
+            focusCancel: false,
+            showConfirmButton: false,
+            grow: 'fullscreen',
+            customClass: 'swal2-markdown',
+            animation: false
+        });
+    });
 
     $visualization.classList.remove('html');
 };

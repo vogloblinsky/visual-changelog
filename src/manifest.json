@@ -1,5 +1,6 @@
 {
   "name": "Visual Changelog",
+  "short_name": "V Changelog",
   "theme_color": "#4a69bd",
   "background_color": "#f1f1f1",
   "display": "fullscreen",

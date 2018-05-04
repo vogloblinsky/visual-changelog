@@ -7,7 +7,10 @@
         "build-unified": "./node_modules/.bin/browserify node_modules/unified/index.js -s unified | uglifyjs -c > src/js/lib/unified.min.js",
         "build-remark-parse": "./node_modules/.bin/browserify node_modules/remark-parse/index.js -s markdown | uglifyjs -c > src/js/lib/remark-parse.min.js",
         "build-remark-html": "./node_modules/.bin/browserify node_modules/remark-html/index.js -s markdownhtml | uglifyjs -c > src/js/lib/remark-html.min.js",
-        "build-libs": "npm run build-unified && npm run build-remark-parse && npm run build-remark-html"
+        "build-libs": "npm run build-unified && npm run build-remark-parse && npm run build-remark-html",
+        "prepare-build": "rm -rf dist && mkdir dist",
+        "copy-assets": "cp -r src/data dist && cp -r src/images dist",
+        "build": "npm run prepare-build && npm run copy-assets"
     },
     "repository": {
         "type": "git",

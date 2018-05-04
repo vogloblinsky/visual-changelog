@@ -45,6 +45,6 @@
         "uglifycss": "0.0.29",
         "uglifyify": "^5.0.0",
         "useref-cli": "^1.0.0",
-        "workbox-build": "^3.2.0"
+        "workbox-cli": "^3.2.0"
     }
 }

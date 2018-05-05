@@ -10,13 +10,7 @@ const $ERROR_PARSING_MESSAGE = `
     We <span style="color: #e34c26;">❤</span> CHANGELOG files that respect <a href="https://keepachangelog.com" target="_blank">https://keepachangelog.com</a> convention.</div>
 `
 
-const ERROR_PARSING_MESSAGE =
-    `We could not process correctly the CHANGELOG file.
-We easily parse CHANGELOG that respect https://keepachangelog.com convention.
-Falling back to HTML.
-`;
 const ERROR_FETCH_MESSAGE = 'Could not fetch the CHANGELOG file.';
-const UPDATE_AVAILABLE_MESSAGE = 'New update available! Reload the page to see the latest juicy changes.';
 const NOTIFIER_DELAY = 5000;
 
 let headingsWithSemVer = [];
@@ -278,7 +272,7 @@ let fetchChangelog = repository => {
             // console.log(data);
             processChangelog(data);
         })
-        .catch(error => {
+        .catch(() => {
             displayFetchError();
         });
 };
@@ -389,11 +383,6 @@ let processChangelog = (rawMardown) => {
 }
 
 let createGraph = () => {
-    let now = moment()
-        .minutes(0)
-        .seconds(0)
-        .milliseconds(0);
-
     let groups = new vis.DataSet();
     groups.add({
         id: '0',
@@ -436,24 +425,26 @@ let createGraph = () => {
     timelineReference.on('select', function (properties) {
         let indexOfClickedVersion = properties.items[0],
             clickedVersion = headingsWithSemVer[indexOfClickedVersion];
-        let childrenTreeOfClickedVersion = {
-            type: 'root',
-            children: clickedVersion.children
-        };
-        let versionDetails = unified()
-            .use(markdown)
-            .use(markdownhtml)
-            .stringify(childrenTreeOfClickedVersion);
-
-        Swal({
-            html: versionDetails,
-            showCloseButton: true,
-            focusCancel: false,
-            showConfirmButton: false,
-            grow: 'fullscreen',
-            customClass: 'swal2-markdown',
-            animation: false
-        });
+        if (typeof clickedVersion !== 'undefined') {
+            let childrenTreeOfClickedVersion = {
+                type: 'root',
+                children: clickedVersion.children
+            };
+            let versionDetails = unified()
+                .use(markdown)
+                .use(markdownhtml)
+                .stringify(childrenTreeOfClickedVersion);
+    
+            Swal({
+                html: versionDetails,
+                showCloseButton: true,
+                focusCancel: false,
+                showConfirmButton: false,
+                grow: 'fullscreen',
+                customClass: 'swal2-markdown',
+                animation: false
+            });
+        }
     });
 
     timelineReference.setWindow(moment().subtract(2, 'years'), moment());

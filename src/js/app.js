@@ -23,6 +23,7 @@ let timelineReference;
 let selectedRepository;
 let $repositoryDropdown;
 let $visualization;
+let $visualizationData;
 let $githubLink;
 
 let uniqueArray = a => [...new Set(a.map(o => JSON.stringify(o)))].map(s => JSON.parse(s));
@@ -65,6 +66,7 @@ let start = () => {
     $repositoryDropdown = document.getElementById('repository-dropdown');
     $visualization = document.getElementById('visualization');
     $githubLink = document.querySelector('.github-link');
+    $visualizationData = document.getElementById('visualization-data');
 
     fetch(`./data/changelogswithstars.json`)
         .then(response => response.json())
@@ -239,7 +241,7 @@ let renderMarkdownToHTML = (rawMarkdown) => {
         .use(markdownhtml)
         .process(rawMarkdown, function (err, file) {
             if (err) throw err;
-            $visualization.innerHTML = $ERROR_PARSING_MESSAGE + file;
+            $visualizationData.innerHTML = $ERROR_PARSING_MESSAGE + file;
             $visualization.classList.add('html');
         });
 };
@@ -279,9 +281,11 @@ let fetchChangelog = repository => {
 
 document.querySelector('select').addEventListener('change', event => {
     selectedRepository = event.currentTarget.value;
-    if (timelineReference) {
+    if (typeof timelineReference !== 'undefined' && timelineReference !== null) {
         timelineReference.destroy();
+        timelineReference = null;
     }
+    $visualizationData.innerHTML = '';
     displayVizualisation();
     showSpinner();
     populateGithubLink(selectedRepository);
@@ -417,9 +421,9 @@ let createGraph = () => {
         onInitialDrawComplete: hideSpinner
     };
 
-    $visualization.innerHTML = '';
+    $visualizationData.innerHTML = '';
 
-    timelineReference = new vis.Timeline($visualization, items, options);
+    timelineReference = new vis.Timeline($visualizationData, items, options);
     timelineReference.setGroups(groups);
 
     timelineReference.on('select', function (properties) {
